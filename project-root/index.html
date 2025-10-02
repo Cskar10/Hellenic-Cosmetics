@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glam Brow Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="script.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-pink-200 to-pink-400 text-white text-center py-20">
+    <h1 class="text-5xl font-bold mb-4">Hellenic Cosmetics</h1>
+    <p class="text-lg mb-6">Perfectly shaped brows, every time.</p>
+    <a href="#booking" class="bg-white text-pink-500 px-6 py-3 rounded-full font-semibold shadow-lg">Book Now</a>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="py-16 px-6 max-w-5xl mx-auto">
+    <h2 class="text-3xl font-bold text-center mb-10">Our Services</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Brow Shaping</h3>
+        <p>Expert shaping tailored to your face structure.</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Brow Tinting</h3>
+        <p>Enhance your brows with natural-looking tint.</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h3 class="text-xl font-semibold mb-2">Microblading</h3>
+        <p>Long-lasting, flawless brows crafted with precision.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="bg-gray-100 py-16 px-6">
+    <h2 class="text-3xl font-bold text-center mb-10">Gallery</h2>
+    <div class="grid md:grid-cols-3 gap-4">
+     <img src="images/brow1.jpg" class="rounded-lg shadow-md" alt="Brow tinting example">
+     <img src="images/brow2.jpg" class="rounded-lg shadow-md" alt="Microblading">
+     <img src="images/brow3.jpg" class="rounded-lg shadow-md" alt="Vibes">
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="py-16 px-6 max-w-3xl mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-6">About Us</h2>
+    <p>At Hellenic Cosmetics, we believe your brows are the frame of your face. Using modern techniques to craft brows that highlight your natural beauty, now you can experience personalized treatments that enhance your confidence, balance your features, and leave you looking effortlessly radiant.</p>
+  </section>
+
+  <!-- Booking -->
+  <section id="booking" class="bg-pink-50 py-16 px-6">
+    <h2 class="text-3xl font-bold text-center mb-6">Book an Appointment</h2>
+    <form id="bookingForm" class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg space-y-4">
+      <input type="text" name="name" placeholder="Your Name" class="w-full border p-3 rounded-lg" required>
+      <input type="email" name="email" placeholder="Your Email" class="w-full border p-3 rounded-lg" required>
+      <input type="date" name="date" class="w-full border p-3 rounded-lg" required>
+      <select name="service" class="w-full border p-3 rounded-lg" required>
+        <option value="">Choose Service</option>
+        <option>Brow Shaping</option>
+        <option>Brow Tinting</option>
+        <option>Microblading</option>
+      </select>
+      <button type="submit" class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold">Submit</button>
+    </form>
+    <p id="bookingMessage" class="text-center mt-4 text-green-600 hidden">Booking request sent!</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300 py-6 text-center">
+    <p>© 2025 Hellenic Cosmetics | 123 Beauty Ave, Browtown</p>
+    <p>Open Tue-Sat, 10am - 7pm | Follow us on Instagram @hellenic-cosmetics</p>
+  </footer>
+
+</body>
+</html>
+f
