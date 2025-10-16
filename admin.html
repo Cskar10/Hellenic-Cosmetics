@@ -38,39 +38,89 @@
     </div>
   </div>
 
-  <script>
-    // Wait for Identity to load
-    netlifyIdentity.on("init", user => {
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const loginSection = document.getElementById("login-section");
+    const dashboardSection = document.getElementById("dashboard-section");
+    const loginButton = document.getElementById("login-button");
+
+    function showLogin() {
+      loginSection.classList.remove("hidden");
+      dashboardSection.classList.add("hidden");
+    }
+
+    function showDashboard() {
+      loginSection.classList.add("hidden");
+      dashboardSection.classList.remove("hidden");
+    }
+
+    // Initialize Netlify Identity
+    netlifyIdentity.on("init", (user) => {
       if (user) {
         showDashboard();
+        loadBookings(user.token.access_token);
       } else {
         showLogin();
       }
     });
 
-    netlifyIdentity.on("login", () => {
+    netlifyIdentity.on("login", (user) => {
       showDashboard();
+      loadBookings(user.token.access_token);
     });
 
     netlifyIdentity.on("logout", () => {
       showLogin();
     });
 
-    document.getElementById("login-button").addEventListener("click", () => {
+    loginButton.addEventListener("click", () => {
       netlifyIdentity.open("login");
     });
 
-    function showLogin() {
-      document.getElementById("login-section").classList.remove("hidden");
-      document.getElementById("dashboard-section").classList.add("hidden");
-    }
-
-    function showDashboard() {
-      document.getElementById("login-section").classList.add("hidden");
-      document.getElementById("dashboard-section").classList.remove("hidden");
-    }
-
+    // Always init last
     netlifyIdentity.init();
-  </script>
+
+    // --- Load Bookings Function (from your admin.js) ---
+    async function loadBookings(token) {
+      const tableBody = document.getElementById("bookings-table");
+      tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">Loading...</td></tr>`;
+
+      try {
+        const res = await fetch("/.netlify/functions/getBookings", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const bookings = await res.json();
+
+        if (!bookings || bookings.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">No bookings found.</td></tr>`;
+          return;
+        }
+
+        tableBody.innerHTML = bookings
+          .map(
+            (b) => `
+            <tr>
+              <td class="border px-3 py-2">${b.id}</td>
+              <td class="border px-3 py-2">${b.name}</td>
+              <td class="border px-3 py-2">${b.email}</td>
+              <td class="border px-3 py-2">${b.service}</td>
+              <td class="border px-3 py-2">${b.date}</td>
+              <td class="border px-3 py-2">${b.time}</td>
+              <td class="border px-3 py-2">${b.created_at}</td>
+              <td class="border px-3 py-2">
+                <button data-id="${b.id}" class="delete-btn bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>
+              </td>
+            </tr>`
+          )
+          .join("");
+      } catch (err) {
+        console.error("Error loading bookings:", err);
+        tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-red-600">Error loading bookings.</td></tr>`;
+      }
+    }
+  });
+</script>
+
 </body>
 </html>
