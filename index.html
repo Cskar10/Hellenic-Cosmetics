@@ -887,6 +887,83 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>
     </div>
   </footer>
+  
+<!-- Policy Trigger Link -->
+<div class="text-center mt-12">
+  <a href="#" id="openPolicy" class="text-[#b8926a] hover:text-[#a17e5a] text-sm tracking-wide underline decoration-[#b8926a]/40 decoration-1 underline-offset-4 transition">
+    View Future Booking Policy
+  </a>
+</div>
+
+<!-- Modal Backdrop -->
+<div id="policyModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center hidden z-50 transition-opacity duration-300">
+  <div class="bg-[#f8f5f2] text-[#3a2e24] rounded-2xl shadow-2xl max-w-2xl w-[90%] p-8 relative animate-fadeIn">
+    
+    <!-- Close Button -->
+    <button id="closePolicy" class="absolute top-4 right-4 text-[#b8926a] hover:text-[#5a4633] text-2xl leading-none transition-colors duration-200">&times;</button>
+    
+    <!-- Modal Header -->
+    <h2 class="text-3xl font-semibold text-center mb-6 tracking-wide font-['Cormorant_Garamond'] uppercase text-[#5a4633]">
+      Future Bookings Policy
+    </h2>
+    
+    <!-- Modal Body -->
+    <div class="space-y-4 text-sm leading-relaxed font-['Cormorant_Garamond']">
+      <p><strong>To ensure a smooth and professional experience for all clients, please review the following booking terms:</strong></p>
+      
+      <p><strong>Deposits & Booking</strong><br>
+      A non-refundable deposit is required to secure your appointment. Bookings are confirmed only once the deposit has been received. Prices and availability are subject to change without notice.</p>
+
+      <p><strong>Rescheduling</strong><br>
+      Appointments may be rescheduled once with a minimum of 48 hours’ notice. Reschedules made after this period will result in the forfeiture of the deposit.</p>
+
+      <p><strong>Cancellations & No-Shows</strong><br>
+      Cancellations within 48 hours or missed appointments will forfeit the deposit. Repeated no-shows or late cancellations may require full prepayment for future bookings.</p>
+
+      <p><strong>Late Arrivals</strong><br>
+      Please arrive on time. Clients arriving more than 10 minutes late may have their appointment shortened or rescheduled at the artist’s discretion.</p>
+
+      <p><strong>Future Appointments</strong><br>
+      Frequent last-minute changes may affect future booking availability. Clients are encouraged to book in advance to secure preferred dates and times.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Animation Styles -->
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out;
+}
+</style>
+
+<!-- Modal Script -->
+<script>
+  const open = document.getElementById("openPolicy");
+  const modal = document.getElementById("policyModal");
+  const close = document.getElementById("closePolicy");
+
+  open.addEventListener("click", e => {
+    e.preventDefault();
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden"; // prevent background scroll
+  });
+
+  close.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+  });
+
+  modal.addEventListener("click", e => {
+    if (e.target === modal) {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  });
+</script>
 
 </body>
 </html>
