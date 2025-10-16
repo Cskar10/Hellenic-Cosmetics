@@ -84,33 +84,34 @@ END:VCALENDAR
 `;
 
     // --- Step 6: Send Email Confirmation ---
-    const adminEmail = process.env.ADMIN_EMAIL;
+const adminEmail = process.env.ADMIN_EMAIL;
 
-    const formattedDate = new Date(date).toLocaleDateString("en-AU", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+const formattedDate = new Date(date).toLocaleDateString("en-AU", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 
-    const policyText = `
+const policyText = `
 Future Bookings Policy:
-- A non-refundable deposit is required to secure your booking.
-- Appointments may be rescheduled once with 48 hours' notice.
-- Cancellations within 48 hours or no-shows forfeit the deposit.
-- Please arrive on time. Arrivals more than 10 minutes late may be rescheduled.
-- Frequent last-minute changes may affect future booking availability.
+• A non-refundable deposit is required to secure your booking.
+• Appointments may be rescheduled once with 48 hours' notice.
+• Cancellations within 48 hours or no-shows forfeit the deposit.
+• Please arrive on time. Late arrivals may need rescheduling.
+• Frequent last-minute changes may affect future booking availability.
 `;
 
-    const msg = {
-      to: email,
-      cc: adminEmail,
-      from: {
-        email: adminEmail,
-        name: "Hellenic Cosmetics",
-      },
-      subject: `Your Appointment Enquiry – ${service}`,
-      text: `Dear ${name},
+const msg = {
+  to: email,
+  cc: adminEmail,
+  from: {
+    email: "bookings@hellenic-cosmetics.com", // must match SendGrid authenticated domain
+    name: "Hellenic Cosmetics",
+  },
+  replyTo: email,
+  subject: `Your Appointment Enquiry – ${service}`,
+  text: `Dear ${name},
 
 Thank you for your appointment enquiry with Hellenic Cosmetics.
 
@@ -125,18 +126,23 @@ ${policyText}
 Warm regards,
 Hellenic Cosmetics
 `,
-      attachments: [
-        {
-          content: Buffer.from(icsContent).toString("base64"),
-          filename: "appointment.ics",
-          type: "text/calendar",
-          disposition: "attachment",
-        },
-      ],
-    };
+  attachments: [
+    {
+      content: Buffer.from(icsContent).toString("base64"),
+      filename: "appointment.ics",
+      type: "text/calendar",
+      disposition: "attachment",
+    },
+  ],
+};
 
-    await sgMail.send(msg);
-    console.info("Enquiry email sent successfully to client and admin.");
+try {
+  await sgMail.send(msg);
+  console.info("Enquiry email sent successfully to client and admin.");
+} catch (emailError) {
+  console.error("SendGrid Email Error:", emailError.response?.body || emailError);
+  throw new Error("Email failed to send. Please check SendGrid configuration or domain authentication.");
+}
 
     return {
       statusCode: 200,
