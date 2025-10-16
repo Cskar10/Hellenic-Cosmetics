@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard - Hellenic Cosmetics</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script defer src="admin.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100 p-6">
-  <div id="login-section" class="text-center">
+
+  <div id="login-section" class="text-center hidden">
     <h1 class="text-2xl font-bold mb-4">Admin Login</h1>
     <button id="login-button" class="bg-blue-600 text-white px-6 py-2 rounded">
       Log In with Netlify
@@ -36,10 +38,39 @@
     </div>
   </div>
 
-  <!-- Load Netlify Identity widget first -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+  <script>
+    // Wait for Identity to load
+    netlifyIdentity.on("init", user => {
+      if (user) {
+        showDashboard();
+      } else {
+        showLogin();
+      }
+    });
 
-<!-- Load your admin logic second -->
-<script src="admin.js" defer></script>
+    netlifyIdentity.on("login", () => {
+      showDashboard();
+    });
+
+    netlifyIdentity.on("logout", () => {
+      showLogin();
+    });
+
+    document.getElementById("login-button").addEventListener("click", () => {
+      netlifyIdentity.open("login");
+    });
+
+    function showLogin() {
+      document.getElementById("login-section").classList.remove("hidden");
+      document.getElementById("dashboard-section").classList.add("hidden");
+    }
+
+    function showDashboard() {
+      document.getElementById("login-section").classList.add("hidden");
+      document.getElementById("dashboard-section").classList.remove("hidden");
+    }
+
+    netlifyIdentity.init();
+  </script>
 </body>
 </html>

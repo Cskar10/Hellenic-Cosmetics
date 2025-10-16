@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login - Hellenic Cosmetics</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
@@ -16,38 +16,23 @@
   <script>
     const loginBtn = document.getElementById("login-btn");
 
-    loginBtn.addEventListener("click", () => {
-      netlifyIdentity.open(); // open Netlify login modal
+    // Always start clean (clear any cached session)
+    netlifyIdentity.on("init", user => {
+      if (user) netlifyIdentity.logout();
     });
 
-    // When user logs in → redirect to admin
+    // Open login modal on click
+    loginBtn.addEventListener("click", () => {
+      netlifyIdentity.open("login");
+    });
+
+    // Redirect to admin page after login
     netlifyIdentity.on("login", () => {
       window.location.href = "/admin.html";
     });
 
-    // If already logged in → skip to admin
-    netlifyIdentity.on("init", user => {
-      if (user) window.location.href = "/admin.html";
-    });
-
+    // Initialize the widget once
     netlifyIdentity.init();
   </script>
-  
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  if (window.netlifyIdentity) {
-    // Always clear old session when login page loads
-    window.netlifyIdentity.on("init", user => {
-      if (user) {
-        window.netlifyIdentity.logout();
-      }
-    });
-
-    // When user logs in, send them to admin
-    window.netlifyIdentity.on("login", () => {
-      window.location.href = "/admin.html";
-    });
-  }
-</script>
 </body>
 </html>
