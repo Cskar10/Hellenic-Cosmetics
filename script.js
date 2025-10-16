@@ -32,10 +32,19 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
       throw new Error(message);
     }
 
+    // Show success message briefly before reload
     messageEl.textContent = "Booking request sent successfully!";
     messageEl.classList.remove("hidden", "text-red-600");
     messageEl.classList.add("text-green-600");
-    form.reset();
+
+    // Optional: Scroll to message for better UX on mobile
+    messageEl.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    // Wait 1.2 seconds, then refresh the page
+    setTimeout(() => {
+      window.location.reload();
+    }, 1200);
+
   } catch (err) {
     console.error(err);
     messageEl.textContent = err.message || "Something went wrong. Please try again.";
