@@ -43,6 +43,7 @@
     const loginSection = document.getElementById("login-section");
     const dashboardSection = document.getElementById("dashboard-section");
     const loginButton = document.getElementById("login-button");
+    const tableBody = document.getElementById("bookings-table");
 
     function showLogin() {
       loginSection.classList.remove("hidden");
@@ -77,12 +78,10 @@
       netlifyIdentity.open("login");
     });
 
-    // Always init last
     netlifyIdentity.init();
 
-    // --- Load Bookings Function (from your admin.js) ---
+    // --- Load Bookings Function ---
     async function loadBookings(token) {
-      const tableBody = document.getElementById("bookings-table");
       tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">Loading...</td></tr>`;
 
       try {
@@ -109,11 +108,37 @@
               <td class="border px-3 py-2">${b.time}</td>
               <td class="border px-3 py-2">${b.created_at}</td>
               <td class="border px-3 py-2">
-                <button data-id="${b.id}" class="delete-btn bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>
+                <button data-id="${b.id}" class="delete-btn bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                  Delete
+                </button>
               </td>
             </tr>`
           )
           .join("");
+
+        // Wire up delete buttons *after* rendering
+        document.querySelectorAll(".delete-btn").forEach((btn) =>
+          btn.addEventListener("click", async () => {
+            const id = btn.dataset.id;
+            if (!confirm(`Delete booking #${id}?`)) return;
+            try {
+              const res = await fetch("/.netlify/functions/deleteBooking", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ id }),
+              });
+              if (!res.ok) throw new Error(await res.text());
+              alert("Deleted successfully");
+              loadBookings(token); // refresh table
+            } catch (err) {
+              alert("Error deleting booking: " + err.message);
+              console.error(err);
+            }
+          })
+        );
       } catch (err) {
         console.error("Error loading bookings:", err);
         tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-red-600">Error loading bookings.</td></tr>`;
