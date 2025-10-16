@@ -3,78 +3,890 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glam Brow Studio</title>
+  <title>Hellenic Cosmetics</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+<style>
+
+@font-face {
+  font-family: 'Coterie';
+  src: url('fonts/Coterie.cbd38104ca9c6033d5581cc50e45479b.5df08d61c5d4ec2543dcd071da2df70.woff2') format('woff2'),
+       url('fonts/Coterie.cbd38104ca9c6033d5581cc50e45479b.5df08d61c5d4ec2543dcd071da2df70.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'La Luxes Serif';
+  src: url('fonts/La_Luxes_Serif.e950dd1c95900db9dfb986bfa.ae9188856ae2e54031760c828bda083.woff2') format('woff2'),
+       url('fonts/La_Luxes_Serif.e950dd1c95900db9dfb986bfa.ae9188856ae2e54031760c828bda083.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Scandilover Script';
+  src: url('fonts/Scandilover_Script14408943202640877019.e.161a7e1bed95819b8df6b95448903357.woff2') format('woff2'),
+       url('fonts/Scandilover_Script14408943202640877019.e.161a7e1bed95819b8df6b95448903357.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+ .hero-title {
+  font-family: 'Coterie', serif;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  font-size: 4.5rem;
+  line-height: 1.1;
+  text-align: center;
+  color: #fff;
+  margin: 0 auto 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-title span {
+  display: inline-block;
+  letter-spacing: inherit;
+  text-align: center;
+  transform: translateX(-0.05em); 
+}
+
+.hero-title .no-space {
+  letter-spacing: 0 !important; 
+  margin-right: -0.1em;        
+  display: inline-block;
+}
+  
+  .hero-title::after {
+  content: "";
+  display: inline-block;
+  width: 0; /* removes phantom trailing gap */
+}
+
+  .hero-subtitle {
+    font-family: 'La Luxes Serif', serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    font-size: 1.8rem; /* equivalent to Tailwind text-3xl */
+    line-height: 1.1;
+    text-align: center;
+    color: #fff;
+    margin: 0 auto;
+    margin-top: 0;
+    max-width: 90vw; /* keeps text within bounds */
+  }
+  
+  .hero-subtitle span {
+  display: inline-block;
+  letter-spacing: inherit;
+  text-align: center;
+  transform: translateX(-0.05em); 
+}
+
+.hero-subtitle .no-space {
+  letter-spacing: 0 !important; 
+  margin-right: -0.1em;        
+  display: inline-block;
+}
+
+  .hero-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hero-title, .hero-subtitle {
+  display: block;
+  text-align: center;
+}
+
+section.relative.text-white.text-center.py-20.bg-\[\#5a4633\] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .hero-tagline {
+  font-family: 'Scandilover Script', serif; 
+  font-size: 2rem;
+  color: #f5e7d0;
+  font-weight: 400;
+  text-align: center;
+  color: #fff;
+  letter-spacing: 0.05em;
+  margin-top: 0.8rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+  /* Slightly reduce on smaller screens to prevent overflow */
+  @media (max-width: 1024px) {
+    .hero-title {
+      font-size: 3.8rem;
+      letter-spacing: 0.3em;
+      max-width: 92vw;
+    }
+    .hero-subtitle {
+      font-size: 1.6rem;
+      letter-spacing: 0.24em;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 3.2rem;
+      letter-spacing: 0.25em;
+      max-width: 94vw;
+    }
+    .hero-subtitle {
+      font-size: 1.4rem;
+      letter-spacing: 0.2em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title {
+      font-size: 3.8rem;
+      letter-spacing: 0.23em;
+      max-width: 100vw;
+    }
+    .hero-subtitle {
+      font-size: 2rem;
+      letter-spacing: 0.15em;
+    }
+  }
+  
+  @media (max-width: 480px) {
+  .hero-tagline {
+    font-size: 1.6rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+</style>
+
+<style>
+/* --- Elegant, spa-style accordion animation --- */
+
+/* Base closed state */
+details > div {
+  opacity: 0;
+  transform: translateY(-12px);
+  filter: blur(5px);
+  max-height: 0;
+  overflow: hidden;
+  will-change: opacity, transform, max-height;
+}
+
+/* Open state (after animation completes) */
+details[open] > div {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  max-height: 3000px;
+}
+
+/* --- OPENING animation sequence --- */
+details.opening > div {
+  opacity: 0;
+  transform: translateY(-12px);
+  filter: blur(5px);
+  max-height: 0;
+  overflow: hidden;
+}
+
+details[open].opening > div {
+  animation: openTransition 1.4s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes openTransition {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+    filter: blur(5px);
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    max-height: 3000px;
+  }
+}
+
+/* --- CLOSING animation sequence --- */
+details.closing > div {
+  transition:
+    opacity 1s cubic-bezier(0.77, 0, 0.175, 1),
+    transform 1s cubic-bezier(0.77, 0, 0.175, 1),
+    filter 1s cubic-bezier(0.77, 0, 0.175, 1),
+    max-height 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* --- Arrow rotation animation --- */
+summary svg {
+  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+  transform: rotate(0deg);
+}
+details[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+/* --- Hover feedback --- */
+summary {
+  transition: background-color 0.4s ease-in-out;
+}
+summary:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* --- Optional: nested staggered animation delay --- */
+details details > div {
+  transition-delay: 0.2s;
+}
+details details details > div {
+  transition-delay: 0.35s;
+}
+</style>
+
+  <!-- Booking Loading Spinner -->
+  <style>
+  .loader {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(184, 146, 106, 0.4);
+    border-top-color: #b8926a;
+    border-radius: 50%;
+    animation: spin 0.8s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  </style>
+
+  <!-- iOS Nested Details Layout Reset -->
+  <style>
+  details[open] > div {
+    will-change: opacity, transform, max-height;
+  }
+
+  details:not([open]) details > div {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    transform: translateY(-8px);
+    filter: blur(4px);
+  }
+  </style>
+
   <script defer src="script.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
 </head>
+
+<script>
+  function scaleTitle() {
+    const title = document.querySelector('.hero-title');
+    if (!title) return;
+
+    const container = title.parentElement;
+    const containerWidth = container.offsetWidth;
+
+    // Reset before measuring
+    title.style.transform = 'scale(1)';
+    title.style.transformOrigin = 'center center';
+
+    const scale = Math.min(1, containerWidth / title.scrollWidth);
+    title.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener('resize', scaleTitle);
+  window.addEventListener('load', scaleTitle);
+</script>
+
+<!-- Flatpickr Setup -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    flatpickr("#datePicker", {
+      altInput: true,
+      altFormat: "d/m/Y",
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      disableMobile: true
+    });
+
+    flatpickr("#timePicker", {
+      enableTime: true,
+      noCalendar: true,
+      dateFormat: "H:i",
+      time_24hr: false,
+      minTime: "10:00",
+      maxTime: "19:00",
+      disableMobile: true
+    });
+  });
+</script>
+
+<!-- Smooth Auto-collapse Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const allDetails = document.querySelectorAll("#serviceCatalog details");
+
+  allDetails.forEach((detail) => {
+    detail.addEventListener("toggle", () => {
+      // --- OPENING ANIMATION ---
+      if (detail.open) {
+        detail.classList.add("opening");
+        detail.offsetHeight; // force reflow
+        setTimeout(() => detail.classList.remove("opening"), 1400);
+
+        // If this is a top-level detail, close others
+        const isTopLevel = detail.parentElement.id === "serviceCatalog";
+        if (isTopLevel) {
+          document.querySelectorAll("#serviceCatalog > details").forEach((other) => {
+            if (other !== detail && other.open) {
+              other.classList.add("closing");
+              const content = other.querySelector("div");
+              if (content) {
+                content.style.maxHeight = content.scrollHeight + "px";
+                requestAnimationFrame(() => {
+                  content.style.maxHeight = "0px";
+                  content.style.opacity = "0";
+                  content.style.transform = "translateY(-12px)";
+                  content.style.filter = "blur(5px)";
+                });
+              }
+              setTimeout(() => {
+                other.classList.remove("closing");
+                other.removeAttribute("open");
+                if (content) content.style = "";
+              }, 1000);
+            }
+          });
+        }
+      }
+
+      // --- CLOSING ANIMATION ---
+      else {
+        detail.classList.add("closing");
+        const content = detail.querySelector("div");
+        if (content) {
+          content.style.maxHeight = content.scrollHeight + "px";
+          requestAnimationFrame(() => {
+            content.style.maxHeight = "0px";
+            content.style.opacity = "0";
+            content.style.transform = "translateY(-12px)";
+            content.style.filter = "blur(5px)";
+          });
+        }
+        setTimeout(() => {
+          detail.classList.remove("closing");
+          if (content) content.style = "";
+        }, 1000);
+
+        // Close nested details when parent closes
+        detail.querySelectorAll("details").forEach((nested) => (nested.open = false));
+      }
+    });
+  });
+});
+</script>
+
+<!-- iOS Nested Details Visibility Fix -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("details details").forEach((nested) => {
+      nested.addEventListener("toggle", () => {
+        if (nested.open && /iP(ad|hone|od)/.test(navigator.userAgent)) {
+          // Force Safari to recalc nested height when opening
+          requestAnimationFrame(() => {
+            const parent = nested.closest("details");
+            if (parent) {
+              const scrollY = window.scrollY; // prevent scroll jump
+              parent.style.display = "none";
+              parent.offsetHeight;
+              parent.style.display = "";
+              window.scrollTo(0, scrollY);
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
+
+<!-- Booking Submit Script -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("bookingForm");
+  const submitButton = form.querySelector("button[type='submit']");
+  let isSubmitting = false;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (isSubmitting) return; // prevent duplicate submission
+    isSubmitting = true;
+    submitButton.disabled = true;
+    submitButton.innerText = "Sending...";
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch("/.netlify/functions/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        alert(json.error || "Something went wrong submitting booking.");
+      } else {
+        alert("Booking confirmed!");
+        form.reset();
+      }
+    } catch (err) {
+      console.error("Booking submission error:", err);
+      alert("Error submitting booking.");
+    } finally {
+      isSubmitting = false;
+      submitButton.disabled = false;
+      submitButton.innerText = "Submit";
+    }
+  });
+});
+
+    }
+  });
+});
+</script>
+
 <body class="bg-gray-50 text-gray-800 font-sans">
 
-  <!-- Hero -->
-  <section class="bg-gradient-to-r from-pink-200 to-pink-400 text-white text-center py-20">
-    <h1 class="text-5xl font-bold mb-4">Hellenic Cosmetics</h1>
-    <p class="text-lg mb-6">Perfectly shaped brows, every time.</p>
-    <a href="#booking" class="bg-white text-pink-500 px-6 py-3 rounded-full font-semibold shadow-lg">Book Now</a>
-  </section>
+ <!-- Hero Section -->
+<section class="relative text-white text-center py-20 bg-cover bg-center"
+         style="background-image: url('images/marble-bg.jpg'); background-size: cover; background-position: center;">
+  <div class="relative z-10 max-w-3xl mx-auto px-4">
+    <img src="images/logo.png" alt="Hellenic Cosmetics Logo" class="w-48 md:w-56 mx-auto mb-6">
+	
+	</div>
+
+  <!-- Centered Text Wrapper -->
+  <div class="hero-text-wrapper relative z-10 mt-6">
+    <h1 class="hero-title"> HELLENI<span class="no-space">C</span></h1>
+    <p class="hero-subtitle">COSMETIC<span class="no-space">S</span></p>
+    <p class="hero-tagline">Awaken the Goddess Within</p>
+
+    <!-- Button -->
+    <a href="#booking"
+       class="mt-8 inline-block bg-white text-[#b8926a] px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-[#b8926a] hover:text-white transition">
+      BOOK NOW
+    </a>
+  </div>
+</section>
 
   <!-- Services -->
-  <section id="services" class="py-16 px-6 max-w-5xl mx-auto">
-    <h2 class="text-3xl font-bold text-center mb-10">Our Services</h2>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="bg-white p-6 rounded-2xl shadow-lg">
-        <h3 class="text-xl font-semibold mb-2">Brow Shaping</h3>
-        <p>Expert shaping tailored to your face structure.</p>
-      </div>
-      <div class="bg-white p-6 rounded-2xl shadow-lg">
-        <h3 class="text-xl font-semibold mb-2">Brow Tinting</h3>
-        <p>Enhance your brows with natural-looking tint.</p>
-      </div>
-      <div class="bg-white p-6 rounded-2xl shadow-lg">
-        <h3 class="text-xl font-semibold mb-2">Microblading</h3>
-        <p>Long-lasting, flawless brows crafted with precision.</p>
-      </div>
+<section id="services" class="py-20 px-6 bg-[#f8f5f2] text-[#3a2e24]">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-4xl font-bold text-center mb-12 tracking-wider uppercase" style="font-family: 'Cormorant Garamond', serif;">
+      OUR SERVICES
+    </h2>
+
+    <div id="serviceCatalog" class="space-y-6" style="font-family: 'Cormorant Garamond', serif;">
+
+      <!-- Brow Services -->
+      <details class="group bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300">
+        <summary class="cursor-pointer py-4 px-6 text-2xl font-semibold flex items-center justify-between">
+          Brow Services
+          <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="bg-[#fdfaf7] space-y-4 p-2">
+
+          <!-- Brow Sculpt -->
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Brow Sculpt – <span class="text-[#b8926a]">$30</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">A simple refresh for your everyday goddess glow.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Guided brow mapping to frame your features</li>
+                <li>Tailored shaping to enhance your natural beauty</li>
+                <li>Waxing and tweezing for divine precision</li>
+				<li>Soothed with our calming after-wax cream</li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Brow Sculpt & Dye -->
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between flex-wrap gap-y-2">
+              <span>Brow Sculpt & Dye – <span class="text-[#b8926a]">$45</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">Lasts up to 7 to 10 days on skin and 3 to 4 weeks on hairs — soft definition that endures beautifully.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Precision brow mapping and shaping</li>
+                <li>Waxing and tweezing for a clean, refined look</li>
+                <li>Brow dye for colour, depth, and symmetry</li>
+                <li>Finished with our nourishing after-wax balm</li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Brow Sculpt & Lamination -->
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Brow Sculpt & Lamination – <span class="text-[#b8926a]">$75</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">Lasts up to 6 to 8 weeks — effortlessly polished, soft, and divine.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Brow mapping and shaping to elevate your natural structure</li>
+                <li>Gentle lamination to lift and align each strand</li>
+                <li>Waxing and tweezing for seamless definition</li>
+				<li>Restored with a nourishing serum and soothing balm</li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Brow Sculpt, Dye & Lamination -->
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Brow Sculpt, Dye & Lamination – <span class="text-[#b8926a]">$90</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">Lasts up to 6 to 8 weeks — a goddess gaze that stays luminous.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>The ultimate brow rebirth — shaped, lifted, and tinted to perfection</li>
+                <li>Mapping, sculpting, waxing, and tweezing</li>
+                <li>Brow lamination for fullness and hold</li>
+				<li>Dye for radiant colour and harmony</li>
+              </ul>
+            </div>
+          </details>
+	  
+	  <!-- Male Brow Waxing -->
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Male Brow Waxing – <span class="text-[#b8926a]">$25</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">For the modern god who values a clean, refined look — strong yet effortless.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Brow mapping to maintain masculine structure</li>
+                <li>Gentle wax and tidy for natural definition</li>
+                <li>Calming post-wax care to soothe the skin</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+
+      <!-- Lash Services -->
+      <details class="group bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300">
+        <summary class="cursor-pointer py-4 px-6 text-2xl font-semibold flex items-center justify-between">
+          Lash Services
+          <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="bg-[#fdfaf7] space-y-4 p-2">
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Lash Filler Lash Lift & Tint – <span class="text-[#b8926a]">$90</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">Lasts up to 6 to 8 weeks — lashes reborn stronger and more radiant each visit.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Gentle lash lift to open and awaken your eyes</li>
+                <li>InLei Lash Filler for strength, nourishment, and growth</li>
+                <li>Tint for soft darkness and depth</li>
+                <li>Finished with a hydrating lash oil</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Korean Lash Lift & Tint – <span class="text-[#b8926a]">$100</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">Lasts up to 8 to 10 weeks — your most alluring, divine lash transformation.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Advanced lifting ritual for a refined, lifted curl</li>
+                <li>Deep-nourishing keratin-based treatment</li>
+                <li>Tint for bold, captivating lashes</li>
+                <li>Finished with a lash essence for lasting vitality</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+
+      <!-- Combo Packages -->
+      <details class="group bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300">
+        <summary class="cursor-pointer py-4 px-6 text-2xl font-semibold flex items-center justify-between">
+          Combo Packages
+          <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="bg-[#fdfaf7] space-y-4 p-2">
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Lash Filler or Korean Lash Lift, Brow Lamination, Sculpt & Dye – <span class="text-[#b8926a]">$160/$170</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">A complete goddess revival.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Full lash lift of your choice — Lash Filler or Korean</li>
+                <li>Brow lamination for lifted, sleek symmetry</li>
+                <li>Sculpt and dye for perfect definition and tone</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="group bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300">
+            <summary class="cursor-pointer py-4 px-6 text-xl font-semibold flex items-center justify-between">
+              <span>Lash Filler or Korean Lash Lift, Brow Lamination & Sculpt – <span class="text-[#b8926a]">$145/$155</span></span>
+              <svg class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-6 pb-6 text-[17px]">
+              <p class="italic mb-4">A soft elegance that endures.</p>
+              <ul class="list-disc list-inside space-y-1">
+                <li>Lash lift of your choice — Filler or Korean</li>
+                <li>Brow lamination for natural lift and harmony</li>
+                <li>Brow sculpt for clean, flattering lines</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+	  
+	  <!-- Add Ons -->
+<details class="group bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300">
+  <summary class="cursor-pointer py-4 px-6 text-2xl font-semibold flex items-center justify-between">
+    Add Ons
+    <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2"
+      viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </summary>
+
+  <div class="bg-[#fdfaf7] space-y-4 p-6 text-[17px]">
+
+    <!-- Upper Lip Wax -->
+    <div class="bg-white rounded-xl shadow-sm p-6 transition-all duration-300">
+      <p class="text-xl font-semibold mb-2">
+        Upper Lip Wax – <span class="text-[#b8926a]">$10</span>
+      </p>
+      <p class="italic mb-2">A quick and gentle touch-up for a smooth, flawless finish.</p>
+      <p>Perfect to pair with any service for that clean, radiant look.</p>
     </div>
-  </section>
+
+    <!-- Chin Wax -->
+    <div class="bg-white rounded-xl shadow-sm p-6 transition-all duration-300">
+      <p class="text-xl font-semibold mb-2">
+        Chin Wax – <span class="text-[#b8926a]">$10</span>
+      </p>
+      <p class="italic mb-2">A quick and gentle touch-up for a smooth, flawless finish.</p>
+      <p>Perfect to pair with any service for that clean, radiant look.</p>
+    </div>
+
+    <!-- Aftercare note -->
+    <div class="text-center italic text-[#7a6a58] mt-8">
+      *Complimentary aftercare kit included with every service to maintain results, protect your treatment, and support healthy growth.*
+    </div>
+
+  </div>
+</details>
+
+
+    </div>
+  </div>
+</section>
 
   <!-- Gallery -->
-  <section id="gallery" class="bg-gray-100 py-16 px-6">
-    <h2 class="text-3xl font-bold text-center mb-10">Gallery</h2>
+  <section id="gallery" class="py-20 px-6 bg-[#f8f5f2] text-[#3a2e24]">
+    <h2 class="text-4xl font-bold text-center mb-12 tracking-wider uppercase" style="font-family: 'Cormorant Garamond', serif;">GALLERY</h2>
     <div class="grid md:grid-cols-3 gap-4">
-     <img src="images/brow1.jpg" class="rounded-lg shadow-md" alt="Brow tinting example">
-     <img src="images/brow2.jpg" class="rounded-lg shadow-md" alt="Microblading">
-     <img src="images/brow3.jpg" class="rounded-lg shadow-md" alt="Vibes">
+      <img src="images/brow1.jpg" class="rounded-lg shadow-md">
+	  <img src="images/brow2.jpg" class="rounded-lg shadow-md">
+      <img src="images/brow3.jpg" class="rounded-lg shadow-md">
     </div>
   </section>
 
   <!-- About -->
-  <section id="about" class="py-16 px-6 max-w-3xl mx-auto text-center">
-    <h2 class="text-3xl font-bold mb-6">About Us</h2>
-    <p>At Hellenic Cosmetics, we believe your brows are the frame of your face. Using modern techniques to craft brows that highlight your natural beauty, now you can experience personalized treatments that enhance your confidence, balance your features, and leave you looking effortlessly radiant.</p>
-  </section>
+<section id="about" class="py-20 px-6 bg-[#f8f5f2] text-[#3a2e24] text-center">
+  <h2 class="text-4xl font-bold mb-12 tracking-wider uppercase" 
+      style="font-family: 'Cormorant Garamond', serif;">
+    ABOUT US
+  </h2>
 
-  <!-- Booking -->
-  <section id="booking" class="bg-pink-50 py-16 px-6">
-    <h2 class="text-3xl font-bold text-center mb-6">Book an Appointment</h2>
-    <form id="bookingForm" class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg space-y-4">
-      <input type="text" name="name" placeholder="Your Name" class="w-full border p-3 rounded-lg" required>
-      <input type="email" name="email" placeholder="Your Email" class="w-full border p-3 rounded-lg" required>
-      <input type="date" name="date" class="w-full border p-3 rounded-lg" required>
-      <select name="service" class="w-full border p-3 rounded-lg" required>
-        <option value="">Choose Service</option>
-        <option>Brow Shaping</option>
-        <option>Brow Tinting</option>
-        <option>Microblading</option>
-      </select>
-      <button type="submit" class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold">Submit</button>
-    </form>
-    <p id="bookingMessage" class="text-center mt-4 text-green-600 hidden">Booking request sent!</p>
-  </section>
+  <div class="max-w-3xl mx-auto space-y-6 leading-relaxed text-lg">
+    <p>
+      Born from the blend of Greek heritage and modern Australian artistry, Hellenic Cosmetics was created with one vision — to make every client feel like the best version of themselves.
+      Inspired by the grace and strength of the goddesses, every service is designed as more than a beauty treatment; it’s a moment of care, confidence, and connection. After moving to Australia in 2012, I found a new home that allowed my passion for beauty to grow and my dream to take shape. Years of learning, evolving, and perfecting my craft led me here — to create a space where self-care feels empowering and divine.
+    </p>
+
+    <p>
+      At Hellenic Cosmetics, beauty is not about changing who you are, but celebrating it.
+    </p>
+
+    <p>
+      ✨ Awaken the Goddess Within ✨
+    </p>
+  </div>
+</section>
+
+
+ <!-- Booking Section -->
+<section id="booking" class="py-20 px-6 bg-[#f8f5f2] text-[#3a2e24]">
+  <h2 class="text-4xl font-bold text-center mb-12 tracking-wider uppercase" style="font-family: 'Cormorant Garamond', serif;">ENQUIRE AN APPOINTMENT</h2>
+
+  <!-- Removed action/method to prevent double Netlify POST -->
+  <form id="bookingForm" class="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-lg space-y-4">
+    <input
+      type="text"
+      name="name"
+      placeholder="Your Name"
+      class="w-full border p-3 rounded-lg"
+      required
+    />
+
+    <input
+      type="email"
+      name="email"
+      placeholder="Your Email"
+      class="w-full border p-3 rounded-lg"
+      required
+    />
+
+    <!-- Date Picker -->
+    <input
+      type="text"
+      id="datePicker"
+      name="date"
+      placeholder="Select Date"
+      class="w-full border p-3 rounded-lg"
+      required
+    />
+
+    <!-- Time Picker -->
+    <input
+      type="text"
+      id="timePicker"
+      name="time"
+      placeholder="Select Time"
+      class="w-full border p-3 rounded-lg"
+      required
+    />
+
+    <!-- Service Dropdown -->
+    <select name="service" class="w-full border p-3 rounded-lg" required>
+      <option value="">Choose Service</option>
+      <option value="Brow Sculpt">Brow Sculpt – $30</option>
+      <option value="Brow Sculpt & Dye">Brow Sculpt & Dye – $45</option>
+      <option value="Brow Sculpt & Lamination">Brow Sculpt & Lamination – $75</option>
+      <option value="Brow Sculpt, Dye & Lamination">Brow Sculpt, Dye & Lamination - $90</option>
+      <option value="Male Brow Waxing">Male Brow Waxing – $25</option>
+      <option value="Lash Filler Lash Lift & Tint">Lash Filler Lash Lift & Tint – $90</option>
+      <option value="Korean Lash Lift & Tint">Korean Lash Lift & Tint – $100</option>
+      <option value="Lash Filler or Korean Lash Lift, Brow Lamination, Sculpt & Dye">Lash Filler or Korean Lash Lift, Brow Lamination, Sculpt & Dye – $160/$170</option>
+      <option value="Lash Filler or Korean Lash Lift, Brow Lamination & Sculpt">Lash Filler or Korean Lash Lift, Brow Lamination & Sculpt – $145/$155</option>
+    </select>
+
+    <button
+      type="submit"
+      id="submitBtn"
+      class="w-full border-2 border-[#b8926a] text-[#b8926a] py-3 rounded-lg font-semibold hover:bg-[#b8926a] hover:text-white transition disabled:opacity-60"
+    >
+      Submit
+    </button>
+  </form>
+
+  <p id="bookingMessage" class="text-center mt-4 text-green-600 hidden">
+    Booking request sent!
+  </p>
+</section>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-gray-300 py-6 text-center">
-    <p>© 2025 Hellenic Cosmetics | 123 Beauty Ave, Browtown</p>
-    <p>Open Tue-Sat, 10am - 7pm | Follow us on Instagram @hellenic-cosmetics</p>
+  <footer class="bg-[#3a2e22] text-[#b8926a] py-8 text-center">
+    <p>© 2025 Hellenic Cosmetics | South Morang, Melbourne</p>
+    <p>Open Tue–Sat, 5pm – 9pm</p>
+    <div class="mt-4 flex justify-center space-x-3">
+      <a href="https://www.instagram.com/helleniccosmetics?igsh=emxiaHd3MXU0b2I4"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="flex items-center space-x-2 text-[#b8926a] hover:text-[#d6b88c] transition font-medium">
+        <!-- Instagram SVG icon (visible white base) -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#b8926a" class="w-6 h-6">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="#b8926a" fill="none"/>
+          <circle cx="12" cy="12" r="4" stroke="#b8926a"/>
+          <circle cx="18" cy="6" r="1.3" fill="#b8926a"/>
+        </svg>
+        <span>@helleniccosmetics</span>
+      </a>
+    </div>
   </footer>
 
 </body>
 </html>
-f
