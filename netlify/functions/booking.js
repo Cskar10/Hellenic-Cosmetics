@@ -158,6 +158,9 @@ ${policyText}
 This email is NOT a booking confirmation.
 You will receive a separate confirmation within the next 48 hours.
 
+We look forward to welcoming you at our Melbourne studio. 
+Please don’t hesitate to reply to this email if you have any questions.
+
 Warm regards,
 Hellenic Cosmetics
 `,
@@ -183,6 +186,8 @@ Hellenic Cosmetics
   A booking confirmation will follow within 48 hours.
 </p>
 
+<p>We look forward to welcoming you at our Melbourne studio. 
+Please don’t hesitate to reply to this email if you have any questions.</p>
 
         <p>Warm regards,<br>
         <strong>Hellenic Cosmetics</strong></p>
