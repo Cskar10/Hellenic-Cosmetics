@@ -17,19 +17,11 @@ exports.handler = async (event) => {
       };
     }
 
-    console.info("Parsed Date/Time Input:");
-    console.info(`  Date: ${date}`);
-    console.info(`  Time: ${time}`);
-
-    // Step 1: Parse date/time
+    // Parse date/time
     const [year, month, day] = date.split("-").map(Number);
     const [hour, minute] = time.split(":").map(Number);
-
-    // Step 2: Correct Melbourne-local time calculation
     const melOffsetHours = getMelbourneOffset(year, month, day);
-    console.info(`  DST-adjusted Melbourne offset: +${melOffsetHours}h`);
 
-    // Construct Melbourne-local time correctly
     const melbourneLocal = new Date(year, month - 1, day, hour, minute);
     const utcMillis = melbourneLocal.getTime() - melOffsetHours * 60 * 60 * 1000;
     const utcDate = new Date(utcMillis);
@@ -57,7 +49,7 @@ exports.handler = async (event) => {
       };
     }
 
-    // Rule 2: Booking between 5pm–9pm
+    // Rule 2: Booking time between 5pm–9pm
     if (hour < 17 || hour >= 21) {
       return {
         statusCode: 400,
@@ -89,7 +81,6 @@ exports.handler = async (event) => {
     const booking = result.rows[0];
     await client.end();
 
-    // Step 4: Email notification
     const adminEmail = process.env.ADMIN_EMAIL;
     const formattedDate = new Date(date).toLocaleDateString("en-AU", {
       weekday: "long",
@@ -98,6 +89,7 @@ exports.handler = async (event) => {
       day: "numeric",
     });
 
+    // Policy text
     const policyText = `
 Future Bookings Policy:
 • A non-refundable deposit is required to secure your booking.
@@ -107,53 +99,50 @@ Future Bookings Policy:
 • Frequent last-minute changes may affect future booking availability.
 `;
 
+    // Unified clean design
     const msg = {
       to: email,
       cc: adminEmail,
-      from: { email: adminEmail, name: "Hellenic Cosmetics" },
+      from: { email: "bookings@hellenic-cosmetics.com", name: "Hellenic Cosmetics" },
       subject: `Your Appointment Enquiry – ${service}`,
-      text: `Dear ${name},
-
-Thank you for your appointment enquiry with Hellenic Cosmetics.
-
-📅 Requested Date: ${formattedDate}
-🕒 Requested Time: ${time}
-💆 Service: ${service}
-
-Your enquiry has been received. Our team will contact you shortly to confirm availability.
-
-${policyText}
-
-⚠️ IMPORTANT:
-This email is NOT a booking confirmation.
-You will receive a separate confirmation within the next 48 hours.
-
-We look forward to welcoming you at our Melbourne studio.
-Please don’t hesitate to reply to this email if you have any questions.
-
-Warm regards,
-Hellenic Cosmetics
-`,
       html: `
-      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; color: #3a2e24; background-color: #f8f5f2; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
-        <h2 style="color: #b8926a; text-align: center;">Appointment Enquiry</h2>
-        <p>Dear ${name},</p>
-        <p>Thank you for your appointment enquiry with <strong>Hellenic Cosmetics</strong>.</p>
-        <div style="background-color: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.05); margin: 20px 0;">
-          <p><strong>📅 Requested Date:</strong> ${formattedDate}</p>
-          <p><strong>🕒 Requested Time:</strong> ${time}</p>
-          <p><strong>💆 Service:</strong> ${service}</p>
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+          <p>Dear ${name},</p>
+
+          <p>Thank you for your appointment enquiry with <strong>Hellenic Cosmetics</strong>.</p>
+
+          <p><strong>📅 Requested Date:</strong> ${formattedDate}<br>
+          <strong>🕒 Requested Time:</strong> ${time}<br>
+          <strong>💆 Service:</strong> ${service}</p>
+
+          <p>Your enquiry has been received. Our team will contact you shortly to confirm availability.</p>
+
+          <hr style="margin: 25px 0;">
+
+          <h3 style="color: #b8926a;">Future Bookings Policy</h3>
+
+          <p>
+            • A non-refundable deposit is required to secure your booking.<br>
+            • Appointments may be rescheduled once with 48 hours' notice.<br>
+            • Cancellations within 48 hours or no-shows forfeit the deposit.<br>
+            • Please arrive on time. Late arrivals may need rescheduling.<br>
+            • Frequent last-minute changes may affect future booking availability.
+          </p>
+
+          <hr style="margin: 25px 0;">
+
+          <p style="text-align: center; color: red; font-weight: bold;">
+            ⚠️ Please note: This email is an acknowledgement of your enquiry only.<br>
+            A booking confirmation will follow within 48 hours.
+          </p>
+
+          <p>We look forward to welcoming you at our Melbourne studio.<br>
+          Please don’t hesitate to reply to this email if you have any questions.</p>
+
+          <p><strong>Warm regards,</strong><br>
+          <strong>Hellenic Cosmetics</strong></p>
         </div>
-        <h3 style="color: #b8926a;">Future Bookings Policy</h3>
-        <pre style="white-space: pre-line; font-family: inherit;">${policyText}</pre>
-        <p style="color: red; text-align: center; font-weight: bold;">
-          ⚠️ This email is NOT a booking confirmation.<br>
-          You will receive a confirmation within 48 hours.
-        </p>
-        <p>We look forward to welcoming you at our Melbourne studio.<br>
-        Please don’t hesitate to reply to this email if you have any questions.</p>
-        <p style="font-weight: bold; color: #b8926a;">Warm regards,<br>Hellenic Cosmetics</p>
-      </div>`,
+      `,
     };
 
     await sgMail.send(msg);
