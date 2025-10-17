@@ -6,10 +6,11 @@
   <title>Admin Dashboard - Hellenic Cosmetics</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script defer src="admin.js"></script>
 </head>
+
 <body class="bg-gray-100 p-6">
 
+  <!-- LOGIN SECTION -->
   <div id="login-section" class="text-center hidden">
     <h1 class="text-2xl font-bold mb-4">Admin Login</h1>
     <button id="login-button" class="bg-blue-600 text-white px-6 py-2 rounded">
@@ -17,6 +18,7 @@
     </button>
   </div>
 
+  <!-- DASHBOARD SECTION -->
   <div id="dashboard-section" class="hidden">
     <h1 class="text-2xl font-bold mb-6">Admin Dashboard</h1>
     <div class="overflow-x-auto bg-white shadow rounded-lg p-4">
@@ -38,114 +40,133 @@
     </div>
   </div>
 
- <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const loginSection = document.getElementById("login-section");
-    const dashboardSection = document.getElementById("dashboard-section");
-    const loginButton = document.getElementById("login-button");
-    const tableBody = document.getElementById("bookings-table");
+  <!-- ADMIN LOGIC -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginSection = document.getElementById("login-section");
+      const dashboardSection = document.getElementById("dashboard-section");
+      const loginButton = document.getElementById("login-button");
+      const tableBody = document.getElementById("bookings-table");
 
-    function showLogin() {
-      loginSection.classList.remove("hidden");
-      dashboardSection.classList.add("hidden");
-    }
+      // --- Authentication Flow ---
+      function showLogin() {
+        loginSection.classList.remove("hidden");
+        dashboardSection.classList.add("hidden");
+      }
 
-    function showDashboard() {
-      loginSection.classList.add("hidden");
-      dashboardSection.classList.remove("hidden");
-    }
+      function showDashboard() {
+        loginSection.classList.add("hidden");
+        dashboardSection.classList.remove("hidden");
+      }
 
-    // Initialize Netlify Identity
-    netlifyIdentity.on("init", (user) => {
-      if (user) {
+      netlifyIdentity.on("init", (user) => {
+        if (user) {
+          showDashboard();
+          loadBookings(user.token.access_token);
+        } else {
+          showLogin();
+        }
+      });
+
+      netlifyIdentity.on("login", (user) => {
         showDashboard();
         loadBookings(user.token.access_token);
-      } else {
-        showLogin();
-      }
-    });
+      });
 
-    netlifyIdentity.on("login", (user) => {
-      showDashboard();
-      loadBookings(user.token.access_token);
-    });
+      netlifyIdentity.on("logout", () => showLogin());
+      loginButton.addEventListener("click", () => netlifyIdentity.open("login"));
+      netlifyIdentity.init();
 
-    netlifyIdentity.on("logout", () => {
-      showLogin();
-    });
+      // --- Load Bookings ---
+      async function loadBookings(token) {
+        tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">Loading...</td></tr>`;
 
-    loginButton.addEventListener("click", () => {
-      netlifyIdentity.open("login");
-    });
+        try {
+          const res = await fetch("/.netlify/functions/getBookings", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!res.ok) throw new Error(await res.text());
+          const bookings = await res.json();
 
-    netlifyIdentity.init();
+          if (!bookings || bookings.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">No bookings found.</td></tr>`;
+            return;
+          }
 
-    // --- Load Bookings Function ---
-    async function loadBookings(token) {
-      tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">Loading...</td></tr>`;
+          tableBody.innerHTML = bookings
+            .map(
+              (b) => `
+              <tr>
+                <td class="border px-3 py-2">${b.id}</td>
+                <td class="border px-3 py-2">${b.name}</td>
+                <td class="border px-3 py-2">${b.email}</td>
+                <td class="border px-3 py-2">${b.service}</td>
+                <td class="border px-3 py-2">${b.date}</td>
+                <td class="border px-3 py-2">${b.time}</td>
+                <td class="border px-3 py-2">${b.created_at}</td>
+                <td class="border px-3 py-2 space-x-1">
+                  <button class="accept-btn bg-green-600 text-white px-3 py-1 rounded" data-id="${b.id}">Accept</button>
+                  <button class="change-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${b.id}">Change</button>
+                  <button class="delete-btn bg-red-600 text-white px-3 py-1 rounded" data-id="${b.id}">Delete</button>
+                </td>
+              </tr>`
+            )
+            .join("");
 
-      try {
-        const res = await fetch("/.netlify/functions/getBookings", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error(await res.text());
-        const bookings = await res.json();
+          // --- Bind Actions ---
+          document.querySelectorAll(".accept-btn").forEach((btn) =>
+            btn.addEventListener("click", async () => {
+              const id = btn.dataset.id;
+              if (confirm("Accept this booking and send confirmation email?")) {
+                const res = await fetch("/.netlify/functions/confirm-booking", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ id, action: "accept" }),
+                });
+                const json = await res.json();
+                alert(json.message || "Confirmation email sent!");
+                loadBookings(token);
+              }
+            })
+          );
 
-        if (!bookings || bookings.length === 0) {
-          tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-gray-500">No bookings found.</td></tr>`;
-          return;
-        }
+          document.querySelectorAll(".change-btn").forEach((btn) =>
+            btn.addEventListener("click", async () => {
+              const id = btn.dataset.id;
+              const newDate = prompt("Enter new date (YYYY-MM-DD):");
+              const newTime = prompt("Enter new time (HH:mm):");
+              if (!newDate || !newTime) return;
+              const res = await fetch("/.netlify/functions/confirm-booking", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, action: "change", newDate, newTime }),
+              });
+              const json = await res.json();
+              alert(json.message || "Booking updated and email sent!");
+              loadBookings(token);
+            })
+          );
 
-        tableBody.innerHTML = bookings
-          .map(
-            (b) => `
-            <tr>
-              <td class="border px-3 py-2">${b.id}</td>
-              <td class="border px-3 py-2">${b.name}</td>
-              <td class="border px-3 py-2">${b.email}</td>
-              <td class="border px-3 py-2">${b.service}</td>
-              <td class="border px-3 py-2">${b.date}</td>
-              <td class="border px-3 py-2">${b.time}</td>
-              <td class="border px-3 py-2">${b.created_at}</td>
-              <td class="border px-3 py-2">
-                <button data-id="${b.id}" class="delete-btn bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                  Delete
-                </button>
-              </td>
-            </tr>`
-          )
-          .join("");
-
-        // Wire up delete buttons *after* rendering
-        document.querySelectorAll(".delete-btn").forEach((btn) =>
-          btn.addEventListener("click", async () => {
-            const id = btn.dataset.id;
-            if (!confirm(`Delete booking #${id}?`)) return;
-            try {
+          document.querySelectorAll(".delete-btn").forEach((btn) =>
+            btn.addEventListener("click", async () => {
+              const id = btn.dataset.id;
+              if (!confirm("Delete this booking?")) return;
               const res = await fetch("/.netlify/functions/deleteBooking", {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({ id }),
               });
               if (!res.ok) throw new Error(await res.text());
               alert("Deleted successfully");
-              loadBookings(token); // refresh table
-            } catch (err) {
-              alert("Error deleting booking: " + err.message);
-              console.error(err);
-            }
-          })
-        );
-      } catch (err) {
-        console.error("Error loading bookings:", err);
-        tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-red-600">Error loading bookings.</td></tr>`;
+              loadBookings(token);
+            })
+          );
+        } catch (err) {
+          console.error("Error loading bookings:", err);
+          tableBody.innerHTML = `<tr><td colspan="8" class="p-4 text-red-600">Error loading bookings.</td></tr>`;
+        }
       }
-    }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
