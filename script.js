@@ -20,6 +20,17 @@ document.getElementById("bookingForm").addEventListener("submit", async (e) => {
     time: form.time.value,
     service: form.service.value,
   };
+  
+  // --- Time validation (must be between 5pm–9pm) ---
+  const [hour, minute] = form.time.value.split(":").map(Number);
+  if (hour < 17 || hour >= 21) {
+    messageEl.textContent = "Bookings are only available between 5:00 PM and 9:00 PM.";
+    messageEl.classList.remove("hidden", "text-green-600");
+    messageEl.classList.add("text-red-600");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit";
+    return; // stop submission
+  }
 
   try {
     const response = await fetch("/.netlify/functions/booking", {

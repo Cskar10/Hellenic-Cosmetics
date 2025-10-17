@@ -25,19 +25,22 @@ exports.handler = async (event) => {
     const [year, month, day] = date.split("-").map(Number);
     const [hour, minute] = time.split(":").map(Number);
 
-    // Step 2: Build UTC and Melbourne local times
-    const melOffsetHours = getMelbourneOffset(year, month, day);
-    console.info(`  DST-adjusted Melbourne offset: +${melOffsetHours}h`);
+   // --- Step 2: Correct Melbourne-local time calculation ---
+const melOffsetHours = getMelbourneOffset(year, month, day);
+console.info(`  DST-adjusted Melbourne offset: +${melOffsetHours}h`);
 
-    const melbourneLocal = new Date(Date.UTC(year, month - 1, day, hour, minute));
-    const melbourneForDB = melbourneLocal.toISOString().slice(0, 19).replace("T", " ");
-    const utcMillis = melbourneLocal.getTime() - melOffsetHours * 60 * 60 * 1000;
-    const utcDate = new Date(utcMillis);
-    const utcForDB = utcDate.toISOString();
+// Construct Melbourne-local time correctly (not as UTC)
+const melbourneLocal = new Date(year, month - 1, day, hour, minute); // Local machine time
+const utcMillis = melbourneLocal.getTime() - melOffsetHours * 60 * 60 * 1000;
+const utcDate = new Date(utcMillis);
 
-    console.info("Final Computed Values:");
-    console.info("  Melbourne Local:", melbourneForDB);
-    console.info("  UTC ISO:", utcForDB);
+const melbourneForDB = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+const utcForDB = utcDate.toISOString();
+
+console.info("Final Computed Values:");
+console.info("  Melbourne Local:", melbourneForDB);
+console.info("  UTC ISO:", utcForDB);
+
 
     // ------------------------------
     // RULE 1: Minimum 48-hour notice
