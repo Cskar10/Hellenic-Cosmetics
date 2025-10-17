@@ -139,10 +139,8 @@ Future Bookings Policy:
     const msg = {
       to: email,
       cc: adminEmail,
-      from: {
-        email: adminEmail,
-        name: "Hellenic Cosmetics",
-      },
+      from: { email: `bookings@helleniccosmetics.com`, name: "Hellenic Cosmetics" },
+
       subject: `Your Appointment Enquiry – ${service}`,
       text: `Dear ${name},
 
@@ -180,10 +178,11 @@ Hellenic Cosmetics
         <pre style="font-family: inherit; white-space: pre-line;">${policyText}</pre>
 
         <hr style="margin: 20px 0;">
-        <div style="background-color:#ffeaea; color:#c00000; padding:15px; font-weight:bold; text-align:center; border-radius:8px;">
-          ⚠️ THIS EMAIL IS NOT A BOOKING CONFIRMATION.<br>
-          YOU WILL RECEIVE A CONFIRMATION WITHIN THE NEXT 48 HOURS.
-        </div>
+        <p style="color:#a33; font-weight:600; text-align:center; margin-top:20px;">
+  Please note: This email is an acknowledgement of your enquiry only.<br>
+  A booking confirmation will follow within 48 hours.
+</p>
+
 
         <p>Warm regards,<br>
         <strong>Hellenic Cosmetics</strong></p>
