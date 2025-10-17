@@ -99,23 +99,6 @@ exports.handler = async (event) => {
     console.info("Booking inserted successfully:", booking);
 
     // ------------------------------
-    // Step 5: Build Calendar Attachment (ICS)
-    // ------------------------------
-    const icsContent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Hellenic Cosmetics//EN
-BEGIN:VEVENT
-UID:${booking.id}@hellenic-cosmetics.com
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z
-DTSTART;TZID=Australia/Melbourne:${date.replace(/-/g, "")}T${time.replace(":", "")}00
-SUMMARY:${service}
-DESCRIPTION:Appointment Enquiry at Hellenic Cosmetics
-END:VEVENT
-END:VCALENDAR
-`;
-
-    // ------------------------------
     // Step 6: Send Email
     // ------------------------------
     const adminEmail = process.env.ADMIN_EMAIL;
