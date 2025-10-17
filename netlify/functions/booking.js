@@ -25,27 +25,27 @@ exports.handler = async (event) => {
     const [year, month, day] = date.split("-").map(Number);
     const [hour, minute] = time.split(":").map(Number);
 
-   // --- Step 2: Correct Melbourne-local time calculation ---
-const melOffsetHours = getMelbourneOffset(year, month, day);
-console.info(`  DST-adjusted Melbourne offset: +${melOffsetHours}h`);
+    // Step 2: Correct Melbourne-local time calculation
+    const melOffsetHours = getMelbourneOffset(year, month, day);
+    console.info(`  DST-adjusted Melbourne offset: +${melOffsetHours}h`);
 
-// Construct Melbourne-local time correctly (not as UTC)
-const melbourneLocal = new Date(year, month - 1, day, hour, minute); // Local machine time
-const utcMillis = melbourneLocal.getTime() - melOffsetHours * 60 * 60 * 1000;
-const utcDate = new Date(utcMillis);
+    // Construct Melbourne-local time correctly (not as UTC)
+    const melbourneLocal = new Date(year, month - 1, day, hour, minute);
+    const utcMillis = melbourneLocal.getTime() - melOffsetHours * 60 * 60 * 1000;
+    const utcDate = new Date(utcMillis);
 
-const melbourneForDB = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
-const utcForDB = utcDate.toISOString();
+    const melbourneForDB = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+    const utcForDB = utcDate.toISOString();
 
-console.info("Final Computed Values:");
-console.info("  Melbourne Local:", melbourneForDB);
-console.info("  UTC ISO:", utcForDB);
-
+    console.info("Final Computed Values:");
+    console.info("  Melbourne Local:", melbourneForDB);
+    console.info("  UTC ISO:", utcForDB);
 
     // ------------------------------
     // RULE 1: Minimum 48-hour notice
     // ------------------------------
-    const nowMelbourne = new Date(new Date().getTime() + melOffsetHours * 60 * 60 * 1000);
+    const now = new Date();
+    const nowMelbourne = new Date(now.getTime() + melOffsetHours * 60 * 60 * 1000);
     const hoursDifference = (melbourneLocal - nowMelbourne) / (1000 * 60 * 60);
 
     if (hoursDifference <= 48) {
@@ -98,7 +98,26 @@ console.info("  UTC ISO:", utcForDB);
     await client.end();
     console.info("Booking inserted successfully:", booking);
 
-    // Step 5: Send confirmation email (same as before)
+    // ------------------------------
+    // Step 5: Build Calendar Attachment (ICS)
+    // ------------------------------
+    const icsContent = `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Hellenic Cosmetics//EN
+BEGIN:VEVENT
+UID:${booking.id}@hellenic-cosmetics.com
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z
+DTSTART;TZID=Australia/Melbourne:${date.replace(/-/g, "")}T${time.replace(":", "")}00
+SUMMARY:${service}
+DESCRIPTION:Appointment Enquiry at Hellenic Cosmetics
+END:VEVENT
+END:VCALENDAR
+`;
+
+    // ------------------------------
+    // Step 6: Send Email
+    // ------------------------------
     const adminEmail = process.env.ADMIN_EMAIL;
 
     const formattedDate = new Date(date).toLocaleDateString("en-AU", {
@@ -118,14 +137,14 @@ Future Bookings Policy:
 `;
 
     const msg = {
-  to: email,
-  cc: adminEmail,
-  from: {
-    email: adminEmail,
-    name: "Hellenic Cosmetics",
-  },
-  subject: `Your Appointment Enquiry – ${service}`,
-  text: `Dear ${name},
+      to: email,
+      cc: adminEmail,
+      from: {
+        email: adminEmail,
+        name: "Hellenic Cosmetics",
+      },
+      subject: `Your Appointment Enquiry – ${service}`,
+      text: `Dear ${name},
 
 Thank you for your appointment enquiry with Hellenic Cosmetics.
 
@@ -145,41 +164,41 @@ Warm regards,
 Hellenic Cosmetics
 `,
 
-  html: `
-  <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <p>Dear ${name},</p>
-    <p>Thank you for your appointment enquiry with <strong>Hellenic Cosmetics</strong>.</p>
+      html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <p>Dear ${name},</p>
+        <p>Thank you for your appointment enquiry with <strong>Hellenic Cosmetics</strong>.</p>
 
-    <p><strong>📅 Requested Date:</strong> ${formattedDate}<br>
-    <strong>🕒 Requested Time:</strong> ${time}<br>
-    <strong>💆 Service:</strong> ${service}</p>
+        <p><strong>📅 Requested Date:</strong> ${formattedDate}<br>
+        <strong>🕒 Requested Time:</strong> ${time}<br>
+        <strong>💆 Service:</strong> ${service}</p>
 
-    <p>Your enquiry has been received. Our team will contact you shortly to confirm availability.</p>
+        <p>Your enquiry has been received. Our team will contact you shortly to confirm availability.</p>
 
-    <hr style="margin: 20px 0;">
-    <h3 style="color: #b8926a;">Future Bookings Policy</h3>
-    <pre style="font-family: inherit; white-space: pre-line;">${policyText}</pre>
+        <hr style="margin: 20px 0;">
+        <h3 style="color: #b8926a;">Future Bookings Policy</h3>
+        <pre style="font-family: inherit; white-space: pre-line;">${policyText}</pre>
 
-    <hr style="margin: 20px 0;">
-    <p style="color: red; font-weight: bold; font-size: 1.1em; text-align: center;">
-      ⚠️ THIS EMAIL IS NOT A BOOKING CONFIRMATION.<br>
-      YOU WILL RECEIVE A CONFIRMATION WITHIN THE NEXT 48 HOURS.
-    </p>
+        <hr style="margin: 20px 0;">
+        <div style="background-color:#ffeaea; color:#c00000; padding:15px; font-weight:bold; text-align:center; border-radius:8px;">
+          ⚠️ THIS EMAIL IS NOT A BOOKING CONFIRMATION.<br>
+          YOU WILL RECEIVE A CONFIRMATION WITHIN THE NEXT 48 HOURS.
+        </div>
 
-    <p>Warm regards,<br>
-    <strong>Hellenic Cosmetics</strong></p>
-  </div>
-  `,
+        <p>Warm regards,<br>
+        <strong>Hellenic Cosmetics</strong></p>
+      </div>
+      `,
 
-  attachments: [
-    {
-      content: Buffer.from(icsContent).toString("base64"),
-      filename: "appointment.ics",
-      type: "text/calendar",
-      disposition: "attachment",
-    },
-  ],
-};
+      attachments: [
+        {
+          content: Buffer.from(icsContent).toString("base64"),
+          filename: "appointment.ics",
+          type: "text/calendar",
+          disposition: "attachment",
+        },
+      ],
+    };
 
     await sgMail.send(msg);
     console.info("Enquiry email sent successfully to client and admin.");
