@@ -118,15 +118,14 @@ Future Bookings Policy:
 `;
 
     const msg = {
-      to: email,
-      cc: adminEmail,
-      from: {
-        email: "bookings@hellenic-cosmetics.com",
-        name: "Hellenic Cosmetics",
-      },
-      replyTo: email,
-      subject: `Your Appointment Enquiry – ${service}`,
-      text: `Dear ${name},
+  to: email,
+  cc: adminEmail,
+  from: {
+    email: adminEmail,
+    name: "Hellenic Cosmetics",
+  },
+  subject: `Your Appointment Enquiry – ${service}`,
+  text: `Dear ${name},
 
 Thank you for your appointment enquiry with Hellenic Cosmetics.
 
@@ -138,10 +137,49 @@ Your enquiry has been received. Our team will contact you shortly to confirm ava
 
 ${policyText}
 
+⚠️ IMPORTANT:
+This email is NOT a booking confirmation.
+You will receive a separate confirmation within the next 48 hours.
+
 Warm regards,
 Hellenic Cosmetics
 `,
-    };
+
+  html: `
+  <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <p>Dear ${name},</p>
+    <p>Thank you for your appointment enquiry with <strong>Hellenic Cosmetics</strong>.</p>
+
+    <p><strong>📅 Requested Date:</strong> ${formattedDate}<br>
+    <strong>🕒 Requested Time:</strong> ${time}<br>
+    <strong>💆 Service:</strong> ${service}</p>
+
+    <p>Your enquiry has been received. Our team will contact you shortly to confirm availability.</p>
+
+    <hr style="margin: 20px 0;">
+    <h3 style="color: #b8926a;">Future Bookings Policy</h3>
+    <pre style="font-family: inherit; white-space: pre-line;">${policyText}</pre>
+
+    <hr style="margin: 20px 0;">
+    <p style="color: red; font-weight: bold; font-size: 1.1em; text-align: center;">
+      ⚠️ THIS EMAIL IS NOT A BOOKING CONFIRMATION.<br>
+      YOU WILL RECEIVE A CONFIRMATION WITHIN THE NEXT 48 HOURS.
+    </p>
+
+    <p>Warm regards,<br>
+    <strong>Hellenic Cosmetics</strong></p>
+  </div>
+  `,
+
+  attachments: [
+    {
+      content: Buffer.from(icsContent).toString("base64"),
+      filename: "appointment.ics",
+      type: "text/calendar",
+      disposition: "attachment",
+    },
+  ],
+};
 
     await sgMail.send(msg);
     console.info("Enquiry email sent successfully to client and admin.");
