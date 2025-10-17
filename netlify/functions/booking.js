@@ -34,7 +34,12 @@ exports.handler = async (event) => {
     const utcMillis = melbourneLocal.getTime() - melOffsetHours * 60 * 60 * 1000;
     const utcDate = new Date(utcMillis);
 
-    const melbourneForDB = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+    const melbourneForDB = `${year}-${String(month).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")} ${String(hour).padStart(2, "0")}:${String(minute).padStart(
+      2,
+      "0"
+    )}:00`;
     const utcForDB = utcDate.toISOString();
 
     console.info("Final Computed Values:");
@@ -44,8 +49,9 @@ exports.handler = async (event) => {
     // ------------------------------
     // RULE 1: Minimum 48-hour notice
     // ------------------------------
-    const now = new Date();
-    const nowMelbourne = new Date(now.getTime() + melOffsetHours * 60 * 60 * 1000);
+    const nowMelbourne = new Date(
+      new Date().getTime() + melOffsetHours * 60 * 60 * 1000
+    );
     const hoursDifference = (melbourneLocal - nowMelbourne) / (1000 * 60 * 60);
 
     if (hoursDifference <= 48) {
@@ -98,10 +104,9 @@ exports.handler = async (event) => {
     await client.end();
     console.info("Booking inserted successfully:", booking);
 
-    // ------------------------------
-    // Step 6: Send Email
-    // ------------------------------
+    // Step 5: Send enquiry email (no ICS file)
     const adminEmail = process.env.ADMIN_EMAIL;
+    const fromEmail = process.env.FROM_EMAIL || adminEmail;
 
     const formattedDate = new Date(date).toLocaleDateString("en-AU", {
       weekday: "long",
@@ -121,10 +126,9 @@ Future Bookings Policy:
 
     const msg = {
       to: email,
-  cc: adminEmail,
-  from: { email: "bookings@hellenic-cosmetics.com", name: "Hellenic Cosmetics" },
-  replyTo: email,
-  subject: `Your Appointment Enquiry – ${service}`,
+      cc: adminEmail,
+      from: { email: fromEmail, name: "Hellenic Cosmetics" },
+      subject: `Your Appointment Enquiry – ${service}`,
       text: `Dear ${name},
 
 Thank you for your appointment enquiry with Hellenic Cosmetics.
@@ -141,50 +145,48 @@ ${policyText}
 This email is NOT a booking confirmation.
 You will receive a separate confirmation within the next 48 hours.
 
-We look forward to welcoming you at our Melbourne studio. 
+We look forward to welcoming you at our Melbourne studio.
 Please don’t hesitate to reply to this email if you have any questions.
 
 Warm regards,
 Hellenic Cosmetics
 `,
-
       html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; color: #3a2e24; background-color: #f8f5f2; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto;">
+        <h2 style="color: #b8926a; text-align: center; letter-spacing: 1px;">Appointment Enquiry</h2>
+
         <p>Dear ${name},</p>
+
         <p>Thank you for your appointment enquiry with <strong>Hellenic Cosmetics</strong>.</p>
 
-        <p><strong>📅 Requested Date:</strong> ${formattedDate}<br>
-        <strong>🕒 Requested Time:</strong> ${time}<br>
-        <strong>💆 Service:</strong> ${service}</p>
+        <div style="background-color: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.05); margin: 20px 0;">
+          <p><strong>📅 Requested Date:</strong> ${formattedDate}</p>
+          <p><strong>🕒 Requested Time:</strong> ${time}</p>
+          <p><strong>💆 Service:</strong> ${service}</p>
+        </div>
 
-        <p>Your enquiry has been received. Our team will contact you shortly to confirm availability.</p>
+        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5ded8;">
 
-        <hr style="margin: 20px 0;">
-        <h3 style="color: #b8926a;">Future Bookings Policy</h3>
-        <pre style="font-family: inherit; white-space: pre-line;">${policyText}</pre>
+        <h3 style="color: #b8926a; font-size: 18px;">Future Bookings Policy</h3>
+        <pre style="white-space: pre-line; font-family: inherit; background-color: #fff; padding: 15px; border-radius: 8px; border: 1px solid #eee; line-height: 1.5;">
+${policyText}
+        </pre>
 
-        <hr style="margin: 20px 0;">
-        <p style="color:#a33; font-weight:600; text-align:center; margin-top:20px;">
-  Please note: This email is an acknowledgement of your enquiry only.<br>
-  A booking confirmation will follow within 48 hours.
-</p>
+        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e5ded8;">
 
-<p>We look forward to welcoming you at our Melbourne studio. 
-Please don’t hesitate to reply to this email if you have any questions.</p>
+        <p style="text-align: center; font-weight: bold; color: red; font-size: 1.1em;">
+          ⚠️ This email is NOT a booking confirmation.<br>
+          You will receive a confirmation within 48 hours.
+        </p>
 
-        <p>Warm regards,<br>
-        <strong>Hellenic Cosmetics</strong></p>
+        <p style="margin-top: 25px;">
+          We look forward to welcoming you at our Melbourne studio.<br>
+          Please don’t hesitate to reply to this email if you have any questions.
+        </p>
+
+        <p style="font-weight: bold; color: #b8926a;">Warm regards,<br>Hellenic Cosmetics</p>
       </div>
       `,
-
-      attachments: [
-        {
-          content: Buffer.from(icsContent).toString("base64"),
-          filename: "appointment.ics",
-          type: "text/calendar",
-          disposition: "attachment",
-        },
-      ],
     };
 
     await sgMail.send(msg);
@@ -193,7 +195,7 @@ Please don’t hesitate to reply to this email if you have any questions.</p>
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: "Enquiry submitted successfully!",
+        message: "Enquiry submitted successfully! Email sent to client and admin.",
         booking,
       }),
     };
