@@ -318,9 +318,11 @@ details details details > div {
 </script>
 
 <!-- Flatpickr Setup -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Date picker setup
     flatpickr("#datePicker", {
       altInput: true,
       altFormat: "d/m/Y",
@@ -329,17 +331,22 @@ details details details > div {
       disableMobile: true
     });
 
+    // Time picker setup (updated hours and format)
     flatpickr("#timePicker", {
       enableTime: true,
       noCalendar: true,
-      dateFormat: "H:i",
-      time_24hr: false,
-      minTime: "10:00",
-      maxTime: "19:00",
+      dateFormat: "H:i", // send value as 24-hour format (e.g. "17:30")
+      altInput: true,
+      altFormat: "h:i K", // show user-friendly AM/PM format
+      time_24hr: true, // important for backend accuracy
+      minTime: "17:00", // earliest time: 5 PM
+      maxTime: "21:00", // latest time: 9 PM
+      minuteIncrement: 15, // 15-minute steps
       disableMobile: true
     });
   });
 </script>
+
 
 <!-- Smooth Auto-collapse Script -->
 <script>
@@ -848,14 +855,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <!-- Time Picker -->
     <input
-  type="time"
+  type="text"
   id="timePicker"
   name="time"
-  min="17:00"
-  max="21:00"
-  step="900"
-  required
+  placeholder="Select Time"
   class="w-full border p-3 rounded-lg"
+  required
 />
 
     <!-- Service Dropdown -->
